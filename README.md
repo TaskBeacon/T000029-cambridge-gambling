@@ -5,16 +5,16 @@
 | Field | Value |
 |---|---|
 | Name | Cambridge Gambling Task |
-| Version | v0.1.0-dev |
+| Version | v0.1.1-dev |
 | URL / Repository | https://github.com/TaskBeacon/T000029-cambridge-gambling |
 | Short Description | Risk-taking and betting strategy assessment under known probabilities. |
 | Created By | TaskBeacon |
-| Date Updated | 2026-02-18 |
+| Date Updated | 2026-02-19 |
 | PsyFlow Version | 0.1.9 |
 | PsychoPy Version | 2025.1.1 |
 | Modality | Behavior |
-| Language | English |
-| Voice Name |  |
+| Language | Chinese |
+| Voice Name | zh-CN-YunyangNeural (voice disabled by default) |
 
 ## 1. Task Overview
 

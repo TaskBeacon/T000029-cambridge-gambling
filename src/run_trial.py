@@ -39,6 +39,10 @@ def run_trial(
     """Run one condition-specific trial with cue, response window, and feedback."""
     trial_id = _next_trial_id(controller)
     trial_data = {"condition": condition, "trial_id": trial_id}
+    response_keys = [str(k) for k in list(settings.key_list) if str(k).lower() != "space"]
+    if not response_keys:
+        response_keys = list(settings.key_list)
+
     make_unit = partial(StimUnit, win=win, kb=kb, runtime=trigger_runtime)
 
     cue = make_unit(unit_label="cue").add_stim(stim_bank.get(f"{condition}_cue"))
@@ -82,7 +86,7 @@ def run_trial(
         trial_id=trial_id,
         phase="target",
         deadline_s=_deadline_s(duration),
-        valid_keys=list(settings.key_list),
+        valid_keys=list(response_keys),
         block_id=block_id,
         condition_id=str(condition),
         task_factors={
@@ -94,7 +98,7 @@ def run_trial(
         stim_id=f"{condition}_target",
     )
     target.capture_response(
-        keys=settings.key_list,
+        keys=response_keys,
         duration=duration,
         onset_trigger=settings.triggers.get(f"{condition}_target_onset"),
         response_trigger=settings.triggers.get(f"{condition}_key_press"),
