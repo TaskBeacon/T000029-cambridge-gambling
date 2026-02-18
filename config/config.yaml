@@ -1,0 +1,220 @@
+subinfo_fields:
+- name: subject_id
+  type: int
+  constraints:
+    min: 101
+    max: 999
+    digits: 3
+subinfo_mapping:
+  subject_id: 被试编号（3位）
+  Participant Information: 被试信息
+  registration_failed: 注册失败
+  registration_successful: 注册成功
+  invalid_input: '{field} 输入无效'
+window:
+  size:
+  - 1280
+  - 720
+  units: pix
+  screen: 0
+  bg_color: gray
+  fullscreen: false
+  monitor_width_cm: 35.5
+  monitor_distance_cm: 60
+task:
+  task_name: cambridge_gambling
+  save_path: ./outputs/human
+  total_blocks: 3
+  total_trials: 72
+  trial_per_block: 24
+  conditions:
+  - low_risk
+  - medium_risk
+  - high_risk
+  key_list:
+  - f
+  - j
+  - space
+  seed_mode: same_across_sub
+  delta: 1
+  language: Chinese
+  voice_name: zh-CN-YunyangNeural
+  voice_enabled: false
+timing:
+  cue_duration: 0.5
+  anticipation_duration: 1.0
+  prefeedback_duration: 0.4
+  feedback_duration: 0.8
+stimuli:
+  fixation:
+    type: text
+    text: +
+    color: white
+    height: 48
+    font: SimHei
+  instruction_text:
+    type: text
+    text: '剑桥博弈任务
+
+
+      请根据当前概率线索做出颜色选择。
+
+      F=红色选项，J=蓝色选项。
+
+
+      按空格键开始。'
+    color: white
+    height: 28
+    wrapWidth: 980
+    font: SimHei
+  low_risk_cue:
+    type: text
+    text: 线索：低风险条件
+    color: green
+    height: 44
+    wrapWidth: 900
+    font: SimHei
+  medium_risk_cue:
+    type: text
+    text: 线索：中风险条件
+    color: white
+    height: 44
+    wrapWidth: 900
+    font: SimHei
+  high_risk_cue:
+    type: text
+    text: 线索：高风险条件
+    color: red
+    height: 44
+    wrapWidth: 900
+    font: SimHei
+  low_risk_target:
+    type: text
+    text: '请选择你认为概率更高的颜色
+
+      F=红色   J=蓝色'
+    color: white
+    height: 54
+    wrapWidth: 900
+    font: SimHei
+  medium_risk_target:
+    type: text
+    text: '请选择你认为概率更高的颜色
+
+      F=红色   J=蓝色'
+    color: white
+    height: 54
+    wrapWidth: 900
+    font: SimHei
+  high_risk_target:
+    type: text
+    text: '请选择你认为概率更高的颜色
+
+      F=红色   J=蓝色'
+    color: white
+    height: 54
+    wrapWidth: 900
+    font: SimHei
+  low_risk_hit_feedback:
+    type: text
+    text: 反应已记录
+    color: green
+    height: 42
+    font: SimHei
+  low_risk_miss_feedback:
+    type: text
+    text: 未在时限内作答
+    color: red
+    height: 42
+    font: SimHei
+  medium_risk_hit_feedback:
+    type: text
+    text: 反应已记录
+    color: green
+    height: 42
+    font: SimHei
+  medium_risk_miss_feedback:
+    type: text
+    text: 未在时限内作答
+    color: red
+    height: 42
+    font: SimHei
+  high_risk_hit_feedback:
+    type: text
+    text: 反应已记录
+    color: green
+    height: 42
+    font: SimHei
+  high_risk_miss_feedback:
+    type: text
+    text: 未在时限内作答
+    color: red
+    height: 42
+    font: SimHei
+  block_break:
+    type: text
+    text: '区块 {block_num}/{total_blocks}
+
+      记录率：{accuracy:.2%}
+
+      当前分数：{total_score}
+
+
+      按空格键继续'
+    color: white
+    height: 24
+    wrapWidth: 900
+    font: SimHei
+  good_bye:
+    type: text
+    text: '任务结束，最终分数：{total_score}
+
+
+      按空格键退出'
+    color: white
+    height: 28
+    wrapWidth: 900
+    font: SimHei
+triggers:
+  map:
+    exp_onset: 1
+    exp_end: 2
+    block_onset: 10
+    block_end: 11
+    low_risk_cue_onset: 20
+    medium_risk_cue_onset: 21
+    high_risk_cue_onset: 22
+    low_risk_anti_onset: 30
+    medium_risk_anti_onset: 31
+    high_risk_anti_onset: 32
+    low_risk_target_onset: 40
+    medium_risk_target_onset: 41
+    high_risk_target_onset: 42
+    low_risk_key_press: 50
+    medium_risk_key_press: 51
+    high_risk_key_press: 52
+    low_risk_no_response: 60
+    medium_risk_no_response: 61
+    high_risk_no_response: 62
+    low_risk_hit_fb_onset: 70
+    low_risk_miss_fb_onset: 71
+    medium_risk_hit_fb_onset: 72
+    medium_risk_miss_fb_onset: 73
+    high_risk_hit_fb_onset: 74
+    high_risk_miss_fb_onset: 75
+  driver:
+    type: serial_url
+    url: loop://
+    baudrate: 115200
+  timing:
+    post_delay_ms: 1
+  policy:
+    strict: false
+controller:
+  initial_duration: 0.25
+  min_duration: 0.08
+  max_duration: 0.4
+  step: 0.02
+  target_accuracy: 0.66
+  condition_specific: true
+  enable_logging: true
