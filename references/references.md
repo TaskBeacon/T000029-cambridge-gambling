@@ -1,22 +1,23 @@
-# References
+﻿# References
 
 - Task ID: `T000029`
-- Generated at: `2026-02-18T16:57:58Z`
+- Generated at: `2026-02-19T13:45:00Z`
 - Selection policy: `openalex_filter_plus_manual_curation`
-- Citation threshold: `100`
+- Citation threshold: `100` (supplemental lower-citation papers retained for protocol-specific implementation details)
 
 ## Selected Papers
 
 | ID | Year | Citations | Journal | High Impact | Title |
 |---|---:|---:|---|---|---|
-| W1497041452 | 1999 | 532 | Journal of Gambling Studies | no | Gambling and the Health of the Public: Adopting a Public Health Perspective |
-| W2128030851 | 2011 | 5099 | Brain | yes | Sensitivity of revised diagnostic criteria for the behavioural variant of frontotemporal dementia |
-| W2134305330 | 2016 | 3581 | Proceedings of the National Academy of Sciences | yes | Cluster failure: Why fMRI inferences for spatial extent have inflated false-positive rates |
-| W2040547343 | 2011 | 2683 | Nature | yes | Genetic risk and a primary role for cell-mediated immune mechanisms in multiple sclerosis |
-| W2046713808 | 2006 | 1605 | Nature | yes | Dopamine-dependent prediction errors underpin reward-seeking behaviour in humans |
-| W2153739923 | 2012 | 1488 | Proceedings of the National Academy of Sciences | yes | Persistent cannabis users show neuropsychological decline from childhood to midlife |
+| W2132469266 | 1999 | 1113 | Neuropsychopharmacology | yes | Dissociable Deficits in the Decision-Making Cognition of Chronic Amphetamine Abusers, Opiate Abusers, Patients with Focal Damage to Prefrontal Cortex, and Tryptophan-Depleted Normal Volunteers Evidence for Monoaminergic Mechanisms |
+| W2109668460 | 2008 | 614 | Brain | yes | Differential effects of insular and ventromedial prefrontal cortex lesions on risky decision-making |
+| W2085433082 | 2003 | 301 | Neuropsychologia | no | The contributions of lesion laterality and lesion volume to decision-making impairment following frontal lobe damage |
+| W2097485712 | 2011 | 108 | Brain | yes | Parcellating the neuroanatomical basis of impaired decision-making in traumatic brain injury |
+| W2016985323 | 2014 | 46 | Brain and Behavior | no | Decision-making deficits in patients diagnosed with disordered gambling using the Cambridge Gambling task: the effects of substance use disorder comorbidity |
+| W2983221917 | 2019 | 46 | Drug and Alcohol Dependence | no | A computational model of the Cambridge gambling task with applications to substance use disorders |
 
 ## Notes
 
-- Paywalled papers were skipped by policy.
-- Any unresolved protocol values are documented as `inferred` in `parameter_mapping.md`.
+- Core CGT workflow is anchored to high-citation lesion and psychopharmacology studies.
+- Two lower-citation but open-access papers are retained because they explicitly document actionable implementation details (bet percentages and timeout behavior).
+- Parameter decisions that are not explicitly fixed by one canonical protocol are marked `inferred` in `parameter_mapping.md`.

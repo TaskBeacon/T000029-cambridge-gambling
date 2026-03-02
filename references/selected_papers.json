@@ -1,154 +1,145 @@
-[
+﻿[
   {
-    "id": "W1497041452",
-    "title": "Gambling and the Health of the Public: Adopting a Public Health Perspective",
+    "id": "W2132469266",
+    "title": "Dissociable Deficits in the Decision-Making Cognition of Chronic Amphetamine Abusers, Opiate Abusers, Patients with Focal Damage to Prefrontal Cortex, and Tryptophan-Depleted Normal Volunteers Evidence for Monoaminergic Mechanisms",
     "authors": [
-      "David Korn",
-      "Howard J. Shaffer"
+      "Robert D. Rogers"
     ],
     "year": 1999,
-    "journal": "Journal of Gambling Studies",
-    "doi_or_url": "https://doi.org/10.1023/a:1023005115932",
-    "citation_count": 532,
-    "is_high_impact": false,
+    "journal": "Neuropsychopharmacology",
+    "doi_or_url": "https://doi.org/10.1016/S0893-133X(98)00091-8",
+    "citation_count": 1113,
+    "is_high_impact": true,
     "open_access": true,
     "used_for": [
       "task_workflow",
-      "timing_parameters"
+      "probability_display",
+      "betting_stage_design"
     ],
     "parameter_bindings": {},
-    "notes": ""
+    "notes": "Foundational CGT paper establishing explicit-probability color choice and betting behavior metrics."
   },
   {
-    "id": "W2128030851",
-    "title": "Sensitivity of revised diagnostic criteria for the behavioural variant of frontotemporal dementia",
+    "id": "W2109668460",
+    "title": "Differential effects of insular and ventromedial prefrontal cortex lesions on risky decision-making",
     "authors": [
-      "Katya Rascovsky",
-      "John R. Hodges",
-      "David S. Knopman",
-      "Mario F. Mendez",
-      "Joel H. Kramer",
-      "John Neuhaus",
-      "John C. van Swieten",
-      "Harro Seelaar",
-      "Elise G.P. Dopper",
-      "Chiadi U. Onyike",
-      "Argye E. Hillis",
-      "Keith A. Josephs"
+      "Luke Clark",
+      "Antoine Bechara",
+      "Hanna Damasio",
+      "Michael R. F. Aitken",
+      "Barbara J. Sahakian",
+      "Trevor W. Robbins"
+    ],
+    "year": 2008,
+    "journal": "Brain",
+    "doi_or_url": "https://doi.org/10.1093/brain/awn066",
+    "citation_count": 614,
+    "is_high_impact": true,
+    "open_access": true,
+    "used_for": [
+      "task_workflow",
+      "outcome_metrics",
+      "trigger_planning"
+    ],
+    "parameter_bindings": {},
+    "notes": "Confirms CGT as explicit-risk paradigm with separated probability judgment and betting components."
+  },
+  {
+    "id": "W2085433082",
+    "title": "The contributions of lesion laterality and lesion volume to decision-making impairment following frontal lobe damage",
+    "authors": [
+      "Luke Clark",
+      "Facundo Manes",
+      "Nagui M. Antoun",
+      "Barbara J. Sahakian",
+      "Trevor W. Robbins"
+    ],
+    "year": 2003,
+    "journal": "Neuropsychologia",
+    "doi_or_url": "https://doi.org/10.1016/S0028-3932(03)00081-2",
+    "citation_count": 301,
+    "is_high_impact": false,
+    "open_access": false,
+    "used_for": [
+      "risk_adjustment_construct",
+      "dependent_measures"
+    ],
+    "parameter_bindings": {},
+    "notes": "Supports interpretation of quality-of-decision and risk-adjustment measures."
+  },
+  {
+    "id": "W2097485712",
+    "title": "Parcellating the neuroanatomical basis of impaired decision-making in traumatic brain injury",
+    "authors": [
+      "Virginia Newcombe",
+      "Joanne Outtrim",
+      "Doris A. Chatfield",
+      "Anne E. Manktelow",
+      "Peter J. Hutchinson",
+      "Jonathan Coles",
+      "Guy Williams",
+      "Barbara J. Sahakian"
     ],
     "year": 2011,
     "journal": "Brain",
-    "doi_or_url": "https://doi.org/10.1093/brain/awr179",
-    "citation_count": 5099,
+    "doi_or_url": "https://doi.org/10.1093/brain/awq388",
+    "citation_count": 108,
     "is_high_impact": true,
     "open_access": true,
     "used_for": [
       "task_workflow",
-      "timing_parameters"
+      "delay_aversion_interpretation"
     ],
     "parameter_bindings": {},
-    "notes": ""
+    "notes": "Uses CGT measures including early-bet tendency and risk adjustment in a non-learning context."
   },
   {
-    "id": "W2134305330",
-    "title": "Cluster failure: Why fMRI inferences for spatial extent have inflated false-positive rates",
+    "id": "W2016985323",
+    "title": "Decision-making deficits in patients diagnosed with disordered gambling using the Cambridge Gambling task: the effects of substance use disorder comorbidity",
     "authors": [
-      "Anders Eklund",
-      "Thomas E. Nichols",
-      "Hans Knutsson"
+      "Evangelos Zois",
+      "Noreen Kortlang",
+      "Sabine Vollstädt-Klein",
+      "Tagrid Lemenager",
+      "Martin Beutel",
+      "Karl Mann",
+      "Mira Fauth-Bühler"
     ],
-    "year": 2016,
-    "journal": "Proceedings of the National Academy of Sciences",
-    "doi_or_url": "https://doi.org/10.1073/pnas.1602413113",
-    "citation_count": 3581,
-    "is_high_impact": true,
+    "year": 2014,
+    "journal": "Brain and Behavior",
+    "doi_or_url": "https://doi.org/10.1002/brb3.231",
+    "citation_count": 46,
+    "is_high_impact": false,
     "open_access": true,
     "used_for": [
-      "task_workflow",
-      "timing_parameters"
+      "betting_percentages",
+      "timeout_rule",
+      "trial_timing"
     ],
     "parameter_bindings": {},
-    "notes": ""
+    "notes": "Provides explicit CGT implementation details (bet set 5/25/50/75/95 and auto-select-on-timeout behavior)."
   },
   {
-    "id": "W2040547343",
-    "title": "Genetic risk and a primary role for cell-mediated immune mechanisms in multiple sclerosis",
+    "id": "W2983221917",
+    "title": "A computational model of the Cambridge gambling task with applications to substance use disorders",
     "authors": [
-      "Stephen Sawcer",
-      "Garrett Hellenthal",
-      "Matti Pirinen",
-      "Chris C. A. Spencer",
-      "Nikolaos A. Patsopoulos",
-      "Loukas Moutsianas",
-      "Alexander Dilthey",
-      "Zhan Su",
-      "Colin Freeman",
-      "Sarah Hunt",
-      "Sarah Edkins",
-      "Emma Gray"
+      "Ricardo J. Romeu",
+      "Nathaniel Haines",
+      "Woo-Young Ahn",
+      "Jerome R. Busemeyer",
+      "Jasmin Vassileva"
     ],
-    "year": 2011,
-    "journal": "Nature",
-    "doi_or_url": "https://doi.org/10.1038/nature10251",
-    "citation_count": 2683,
-    "is_high_impact": true,
+    "year": 2019,
+    "journal": "Drug and Alcohol Dependence",
+    "doi_or_url": "https://doi.org/10.1016/j.drugalcdep.2019.107711",
+    "citation_count": 46,
+    "is_high_impact": false,
     "open_access": true,
     "used_for": [
-      "task_workflow",
-      "timing_parameters"
+      "computational_task_factors",
+      "parameter_inference"
     ],
     "parameter_bindings": {},
-    "notes": ""
-  },
-  {
-    "id": "W2046713808",
-    "title": "Dopamine-dependent prediction errors underpin reward-seeking behaviour in humans",
-    "authors": [
-      "Mathias Pessiglione",
-      "Ben Seymour",
-      "Guillaume Flandin",
-      "Raymond J. Dolan",
-      "Chris Frith"
-    ],
-    "year": 2006,
-    "journal": "Nature",
-    "doi_or_url": "https://doi.org/10.1038/nature05051",
-    "citation_count": 1605,
-    "is_high_impact": true,
-    "open_access": true,
-    "used_for": [
-      "task_workflow",
-      "timing_parameters"
-    ],
-    "parameter_bindings": {},
-    "notes": ""
-  },
-  {
-    "id": "W2153739923",
-    "title": "Persistent cannabis users show neuropsychological decline from childhood to midlife",
-    "authors": [
-      "Madeline H. Meier",
-      "Avshalom Caspi",
-      "Antony Ambler",
-      "HonaLee Harrington",
-      "Renate Houts",
-      "Richard S.E. Keefe",
-      "Kay McDonald",
-      "Aimee L. Ward",
-      "Richie Poulton",
-      "Terrie E. Moffitt"
-    ],
-    "year": 2012,
-    "journal": "Proceedings of the National Academy of Sciences",
-    "doi_or_url": "https://doi.org/10.1073/pnas.1206820109",
-    "citation_count": 1488,
-    "is_high_impact": true,
-    "open_access": true,
-    "used_for": [
-      "task_workflow",
-      "timing_parameters"
-    ],
-    "parameter_bindings": {},
-    "notes": ""
+    "notes": "Supports explicit mapping of box ratios and betting-stage latent parameters."
   }
 ]

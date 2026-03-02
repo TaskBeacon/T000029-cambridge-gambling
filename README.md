@@ -1,13 +1,13 @@
-# Cambridge Gambling Task
+﻿# Cambridge Gambling Task
 
 ![Maturity: draft](https://img.shields.io/badge/Maturity-draft-64748b?style=flat-square&labelColor=111827)
 
 | Field | Value |
 |---|---|
 | Name | Cambridge Gambling Task |
-| Version | v0.1.1-dev |
+| Version | v0.2.0-dev |
 | URL / Repository | https://github.com/TaskBeacon/T000029-cambridge-gambling |
-| Short Description | Risk-taking and betting strategy assessment under known probabilities. |
+| Short Description | Explicit-risk decision task with red/blue probability judgment and proportional betting. |
 | Created By | TaskBeacon |
 | Date Updated | 2026-02-19 |
 | PsyFlow Version | 0.1.9 |
@@ -18,9 +18,9 @@
 
 ## 1. Task Overview
 
-This task implements a Cambridge Gambling-style risk paradigm with `low_risk`, `medium_risk`, and `high_risk` condition streams. Trials include cueing, anticipation, target response capture, and condition-specific feedback.
+This implementation follows the Cambridge Gambling Task (CGT) structure: participants view explicit red/blue box ratios (10 boxes total), choose the color most likely to hide a token, then choose a betting percentage of current points.
 
-The current implementation is organized for standardized PsyFlow execution across human, QA, and simulation modes with trial-level logging and trigger event coverage.
+Unlike MID-style templates, this task has no cue-target reaction stage. The core logic is probability judgment + bet selection + point outcome update.
 
 ## 2. Task Flow
 
@@ -28,35 +28,40 @@ The current implementation is organized for standardized PsyFlow execution acros
 
 | Step | Description |
 |---|---|
-| 1. Prepare trials | Condition schedule is loaded per block. |
-| 2. Execute trials | `run_trial(...)` runs cue, anticipation, target, and feedback phases. |
-| 3. Block summary | Accuracy and score summary is shown. |
-| 4. Final summary | End-of-task score is shown. |
+| 1. Block context | Controller sets block-level bet order (`ascending` or `descending`). |
+| 2. Trial execution | Each trial samples a box ratio, majority color side, and token outcome probability. |
+| 3. Block summary | Reports score, quality-of-decision, win rate, mean bet, RTs, timeout counts, delay-aversion proxy. |
+| 4. Task summary | Final metrics shown with ascending vs descending bet comparison. |
 
 ### Trial-Level Flow
 
 | Step | Description |
 |---|---|
-| Cue | Risk-level cue is shown. |
-| Anticipation | Fixation interval with response monitoring. |
-| Target | Condition target is displayed and response is captured. |
-| Pre-feedback fixation | Brief fixation transition stage. |
-| Feedback | Hit/miss feedback is shown and score updates. |
+| Fixation | Short jittered fixation (`+`). |
+| Color choice | Show 10 red/blue boxes + ratio text; participant chooses `F=红` or `J=蓝`. |
+| Bet choice | Show five bet options (5/25/50/75/95) ordered by block context; participant selects with `1-5`. |
+| Feedback | Reveal token color, applied stake, point delta, and updated score. |
+| ITI | Short jittered fixation before next trial. |
 
 ### Controller Logic
 
 | Component | Description |
 |---|---|
-| Adaptive duration | Controller adjusts target duration based on recent accuracy. |
-| Condition tracking | Histories are updated for each condition. |
-| Scoring update | Trial hit/miss drives score delta. |
+| Ratio sampler | Samples one pair from `[[9,1],[8,2],[7,3],[6,4]]` each trial. |
+| Outcome sampler | Token color sampled by visible probability (`P(red)=red_boxes/10`). |
+| Bet order | `ascending` block uses `[5,25,50,75,95]`; `descending` reverses this order. |
+| Score update | `bet_amount = round(points_before * bet_percent / 100)`; win adds, loss subtracts. |
+| Timeout policy | Color timeout -> no bet and no score change; bet timeout -> auto-select last displayed percentage. |
 
 ### Runtime Context Phases
 
 | Phase Label | Meaning |
 |---|---|
-| `anticipation` | Pre-target monitoring stage. |
-| `target` | Active response window for target. |
+| `fixation` | Inter-stage fixation. |
+| `color_choice` | Explicit probability judgment stage. |
+| `bet_choice` | Percentage betting stage. |
+| `feedback` | Outcome/score update display. |
+| `iti` | Inter-trial interval fixation. |
 
 ## 3. Configuration Summary
 
@@ -73,7 +78,7 @@ The current implementation is organized for standardized PsyFlow execution acros
 | `size` | `[1280, 720]` |
 | `units` | `pix` |
 | `screen` | `0` |
-| `bg_color` | `gray` |
+| `bg_color` | `black` |
 | `fullscreen` | `false` |
 | `monitor_width_cm` | `35.5` |
 | `monitor_distance_cm` | `60` |
@@ -82,25 +87,39 @@ The current implementation is organized for standardized PsyFlow execution acros
 
 | Name | Type | Description |
 |---|---|---|
-| `*_cue` | text | Risk-level cue prompts by condition. |
-| `*_target` | text | Condition-specific target prompts. |
-| `*_hit_feedback`, `*_miss_feedback` | text | Condition-specific outcome feedback. |
-| `fixation`, `block_break`, `good_bye` | text | Shared fixation and summary screens. |
+| `trial_prompt`, `score_text`, `ratio_text`, `color_key_hint` | text | Color-choice stage envelope with explicit ratio and key mapping. |
+| dynamic `box_rect_*` | rect | Ten red/blue boxes generated per trial from sampled ratio and side assignment. |
+| `bet_prompt`, `bet_key_hint` | text | Bet-choice instruction and key legend. |
+| dynamic `bet_box_*` | rect + text | Five on-screen bet options mapped to keys `1-5` in block-specific order. |
+| `feedback_outcome`, `feedback_auto_bet`, `feedback_color_timeout` | text | Outcome and timeout-specific feedback messages. |
+| `fixation`, `block_break`, `good_bye`, `instruction_text` | text | Shared trial separators and task envelope screens. |
 
 ### d. Timing
 
 | Phase | Duration |
 |---|---|
-| cue | 0.5 s |
-| anticipation | 1.0 s |
-| prefeedback | 0.4 s |
-| feedback | 0.8 s |
-| target | adaptive via controller (`0.08`-`0.40` s bounds) |
+| fixation | jittered (`0.3-0.6 s` human) |
+| color choice | `3.0 s` deadline |
+| bet choice | `3.5 s` deadline |
+| feedback | `1.0 s` |
+| ITI | jittered (`0.3-0.6 s` human) |
+
+### e. Triggers
+
+| Trigger | Code | Description |
+|---|---:|---|
+| `choice_onset` | 30 | Color-choice screen onset |
+| `choice_red` / `choice_blue` | 31 / 32 | Color response events |
+| `color_timeout` | 33 | No color response |
+| `bet_onset` | 40 | Bet-choice screen onset |
+| `bet_key_1..5` | 41..45 | Bet key responses |
+| `bet_timeout` | 46 | No bet response |
+| `feedback_onset` | 50 | Outcome screen onset |
 
 ## 4. Methods (for academic publication)
 
-Participants completed a risk-based decision task with three risk-level conditions. Each trial included cue exposure, anticipation, response-window target presentation, and immediate feedback, enabling estimation of condition-wise performance metrics.
+Participants completed an explicit-risk gambling paradigm in which probabilities were represented by visible red/blue box ratios (total = 10). On each trial, participants first selected the color judged most likely to hide a token, then selected a stake as a percentage of current points.
 
-A controller adapted target exposure duration as a function of recent accuracy to keep task difficulty within bounds. Trial logs include response status, timing, condition identity, and score updates.
+The task manipulated bet-order context (`ascending` vs `descending`) at block level and recorded key CGT outputs: majority-color choice quality, betting magnitude, outcome sensitivity, and response latency. Score updates were proportional to selected stake and outcome congruence.
 
-Trigger codes were emitted at major trial transitions (cue, anticipation, target, feedback), supporting synchronized acquisition workflows.
+All phases were instrumented with phase-level triggers and trial context metadata, enabling synchronized behavioral and acquisition-aligned analyses across human, QA, and simulation modes.

@@ -1,19 +1,22 @@
-id: T000029
+﻿id: T000029
 slug: cambridge-gambling
 title: Cambridge Gambling Task
 acquisition: behavior
 variant: baseline
-cognitive_domain: []
+cognitive_domain:
+  - decision_making
+  - risk_taking
+  - reward_processing
 maturity: draft
 version:
-  release_tag: v0.1.1-dev
+  release_tag: v0.2.0-dev
 contracts:
   psyflow_taps: v0.1.0
 evidence:
-- W1497041452
-- W2128030851
-- W2134305330
-- W2040547343
-- W2046713808
-- W2153739923
+  - W2132469266
+  - W2109668460
+  - W2085433082
+  - W2097485712
+  - W2016985323
+  - W2983221917
 maintainer: []

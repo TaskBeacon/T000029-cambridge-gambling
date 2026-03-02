@@ -1,23 +1,21 @@
-subinfo_fields:
-- name: subject_id
-  type: int
-  constraints:
-    min: 101
-    max: 999
-    digits: 3
+﻿subinfo_fields:
+  - name: subject_id
+    type: int
+    constraints:
+      min: 101
+      max: 999
+      digits: 3
 subinfo_mapping:
-  subject_id: 被试编号（3位）
+  subject_id: 受试者编号（3位）
   Participant Information: 被试信息
   registration_failed: 注册失败
   registration_successful: 注册成功
-  invalid_input: '{field} 输入无效'
+  invalid_input: "{field} 输入无效"
 window:
-  size:
-  - 1280
-  - 720
+  size: [1280, 720]
   units: pix
   screen: 0
-  bg_color: gray
+  bg_color: black
   fullscreen: false
   monitor_width_cm: 35.5
   monitor_distance_cm: 60
@@ -25,155 +23,189 @@ task:
   task_name: cambridge_gambling
   save_path: ./outputs/sim
   total_blocks: 1
-  total_trials: 9
-  trial_per_block: 9
+  total_trials: 20
+  trial_per_block: 20
   conditions:
-  - low_risk
-  - medium_risk
-  - high_risk
+    - gambling
   key_list:
-  - f
-  - j
-  - space
+    - f
+    - j
+    - "1"
+    - "2"
+    - "3"
+    - "4"
+    - "5"
+    - space
+  red_key: f
+  blue_key: j
+  bet_keys:
+    - "1"
+    - "2"
+    - "3"
+    - "4"
+    - "5"
   seed_mode: same_across_sub
-  delta: 1
   language: Chinese
   voice_name: zh-CN-YunyangNeural
   voice_enabled: false
 timing:
-  cue_duration: 0.5
-  anticipation_duration: 1.0
-  prefeedback_duration: 0.4
-  feedback_duration: 0.8
+  fixation_duration: [0.10, 0.16]
+  color_choice_deadline: 0.65
+  bet_choice_deadline: 0.75
+  feedback_duration: 0.12
+  iti_duration: [0.08, 0.12]
 stimuli:
-  fixation:
-    type: text
-    text: +
-    color: white
-    height: 48
-    font: SimHei
   instruction_text:
     type: text
-    text: '剑桥博弈任务
+    text: |
+      剑桥赌博任务（Sim）
 
-
-      请根据当前概率线索做出颜色选择。
-
-      F=红色选项，J=蓝色选项。
-
-
-      按空格键开始。'
+      F=红色，J=蓝色。
+      下注使用 1-5 键。
+      按空格键开始。
     color: white
+    height: 30
+    wrapWidth: 1000
+    pos: [0, 80]
+    font: SimHei
+  fixation:
+    type: text
+    text: "+"
+    color: white
+    height: 52
+    pos: [0, 0]
+    font: SimHei
+  trial_prompt:
+    type: text
+    text: "请判断黄色球更可能在哪种颜色下"
+    color: [0.95, 0.93, 0.72]
+    height: 34
+    wrapWidth: 1100
+    pos: [0, 310]
+    font: SimHei
+  score_text:
+    type: text
+    text: "当前分数：{current_points}"
+    color: [0.78, 0.95, 0.86]
+    height: 30
+    pos: [0, 265]
+    font: SimHei
+  ratio_text:
+    type: text
+    text: "本轮比例：红 {red_boxes} : 蓝 {blue_boxes}（{ratio_label}）"
+    color: [0.9, 0.9, 0.9]
     height: 28
     wrapWidth: 980
+    pos: [0, 220]
     font: SimHei
-  low_risk_cue:
+  color_key_hint:
     type: text
-    text: 线索：低风险条件
-    color: green
-    height: 44
-    wrapWidth: 900
+    text: "选择颜色：{red_key}=红色，{blue_key}=蓝色"
+    color: [0.92, 0.92, 0.92]
+    height: 28
+    wrapWidth: 980
+    pos: [0, 80]
     font: SimHei
-  medium_risk_cue:
+  bet_prompt:
     type: text
-    text: 线索：中风险条件
+    text: "请选择下注比例（{order_label}）"
+    color: [0.96, 0.92, 0.62]
+    height: 32
+    wrapWidth: 1000
+    pos: [0, 115]
+    font: SimHei
+  bet_key_hint:
+    type: text
+    text: "按键对应：{bet_legend}。若超时将自动选择最后一个比例。"
+    color: [0.9, 0.9, 0.9]
+    height: 24
+    wrapWidth: 1080
+    pos: [0, -245]
+    font: SimHei
+  feedback_outcome:
+    type: text
+    text: |
+      你选择了：{chosen_color_cn}
+      实际位置：{token_color_cn}
+      下注比例：{bet_percent}%（{bet_amount} 分）
+      本轮变化：{net_change:+d} 分
+      当前分数：{points_after}
     color: white
-    height: 44
-    wrapWidth: 900
+    height: 30
+    wrapWidth: 980
+    pos: [0, 35]
     font: SimHei
-  high_risk_cue:
+  feedback_auto_bet:
     type: text
-    text: 线索：高风险条件
-    color: red
-    height: 44
-    wrapWidth: 900
+    text: |
+      下注阶段超时，系统自动采用最后一个比例。
+      你选择了：{chosen_color_cn}
+      实际位置：{token_color_cn}
+      自动下注：{bet_percent}%（{bet_amount} 分）
+      本轮变化：{net_change:+d} 分
+      当前分数：{points_after}
+    color: [1.0, 0.88, 0.62]
+    height: 28
+    wrapWidth: 1040
+    pos: [0, 35]
     font: SimHei
-  low_risk_target:
+  feedback_color_timeout:
     type: text
-    text: '请选择你认为概率更高的颜色
-
-      F=红色   J=蓝色'
-    color: white
-    height: 54
-    wrapWidth: 900
-    font: SimHei
-  medium_risk_target:
-    type: text
-    text: '请选择你认为概率更高的颜色
-
-      F=红色   J=蓝色'
-    color: white
-    height: 54
-    wrapWidth: 900
-    font: SimHei
-  high_risk_target:
-    type: text
-    text: '请选择你认为概率更高的颜色
-
-      F=红色   J=蓝色'
-    color: white
-    height: 54
-    wrapWidth: 900
-    font: SimHei
-  low_risk_hit_feedback:
-    type: text
-    text: 反应已记录
-    color: green
-    height: 42
-    font: SimHei
-  low_risk_miss_feedback:
-    type: text
-    text: 未在时限内作答
-    color: red
-    height: 42
-    font: SimHei
-  medium_risk_hit_feedback:
-    type: text
-    text: 反应已记录
-    color: green
-    height: 42
-    font: SimHei
-  medium_risk_miss_feedback:
-    type: text
-    text: 未在时限内作答
-    color: red
-    height: 42
-    font: SimHei
-  high_risk_hit_feedback:
-    type: text
-    text: 反应已记录
-    color: green
-    height: 42
-    font: SimHei
-  high_risk_miss_feedback:
-    type: text
-    text: 未在时限内作答
-    color: red
-    height: 42
+    text: |
+      颜色判断超时，本轮不下注。
+      实际位置：{token_color_cn}
+      当前分数保持：{points_after}
+    color: [1.0, 0.45, 0.45]
+    height: 32
+    wrapWidth: 980
+    pos: [0, 20]
     font: SimHei
   block_break:
     type: text
-    text: '区块 {block_num}/{total_blocks}
+    text: |
+      第 {block_num}/{total_blocks} 组完成
 
-      记录率：{accuracy:.2%}
+      当前分数：{points_end}
+      本组净变化：{block_net:+d}
+      多数颜色选择率：{quality_rate:.1%}
+      胜率：{win_rate:.1%}
+      平均下注比例：{mean_bet_pct:.1f}%
+      颜色选择反应时：{mean_color_rt_ms:.0f} ms
+      下注反应时：{mean_bet_rt_ms:.0f} ms
+      颜色超时次数：{color_timeout_count}
+      下注超时次数：{bet_timeout_count}
+      延迟厌恶指标（降序-升序）：{delay_aversion:+.1f}
 
-      当前分数：{total_score}
-
-
-      按空格键继续'
+      按空格键继续。
     color: white
-    height: 24
-    wrapWidth: 900
+    height: 25
+    wrapWidth: 1120
+    pos: [0, 0]
     font: SimHei
   good_bye:
     type: text
-    text: '任务结束，最终分数：{total_score}
+    text: |
+      Sim运行结束
 
+      总试次数：{total_trials}
+      最终分数：{points_end}
+      全程净变化：{net_total:+d}
+      多数颜色选择率：{quality_rate:.1%}
+      胜率：{win_rate:.1%}
+      平均下注比例：{mean_bet_pct:.1f}%
+      升序平均下注：{ascending_mean_bet:.1f}%
+      降序平均下注：{descending_mean_bet:.1f}%
+      延迟厌恶指标（降序-升序）：{delay_aversion:+.1f}
+      颜色选择反应时：{mean_color_rt_ms:.0f} ms
+      下注反应时：{mean_bet_rt_ms:.0f} ms
+      颜色超时次数：{color_timeout_count}
+      下注超时次数：{bet_timeout_count}
 
-      按空格键退出'
+      按空格键退出。
     color: white
-    height: 28
-    wrapWidth: 900
+    height: 25
+    wrapWidth: 1120
+    pos: [0, 0]
     font: SimHei
 triggers:
   map:
@@ -181,27 +213,20 @@ triggers:
     exp_end: 2
     block_onset: 10
     block_end: 11
-    low_risk_cue_onset: 20
-    medium_risk_cue_onset: 21
-    high_risk_cue_onset: 22
-    low_risk_anti_onset: 30
-    medium_risk_anti_onset: 31
-    high_risk_anti_onset: 32
-    low_risk_target_onset: 40
-    medium_risk_target_onset: 41
-    high_risk_target_onset: 42
-    low_risk_key_press: 50
-    medium_risk_key_press: 51
-    high_risk_key_press: 52
-    low_risk_no_response: 60
-    medium_risk_no_response: 61
-    high_risk_no_response: 62
-    low_risk_hit_fb_onset: 70
-    low_risk_miss_fb_onset: 71
-    medium_risk_hit_fb_onset: 72
-    medium_risk_miss_fb_onset: 73
-    high_risk_hit_fb_onset: 74
-    high_risk_miss_fb_onset: 75
+    fixation_onset: 20
+    choice_onset: 30
+    choice_red: 31
+    choice_blue: 32
+    color_timeout: 33
+    bet_onset: 40
+    bet_key_1: 41
+    bet_key_2: 42
+    bet_key_3: 43
+    bet_key_4: 44
+    bet_key_5: 45
+    bet_timeout: 46
+    feedback_onset: 50
+    iti_onset: 60
   driver:
     type: serial_url
     url: loop://
@@ -211,12 +236,21 @@ triggers:
   policy:
     strict: false
 controller:
-  initial_duration: 0.25
-  min_duration: 0.08
-  max_duration: 0.4
-  step: 0.02
-  target_accuracy: 0.66
-  condition_specific: true
+  fixation_duration: [0.10, 0.16]
+  color_choice_deadline: 0.65
+  bet_choice_deadline: 0.75
+  feedback_duration: 0.12
+  iti_duration: [0.08, 0.12]
+  initial_points: 100
+  box_ratios:
+    - [9, 1]
+    - [8, 2]
+    - [7, 3]
+    - [6, 4]
+  bet_options: [5, 25, 50, 75, 95]
+  block_order:
+    - ascending
+  random_seed: 11
   enable_logging: true
 sim:
   output_dir: outputs/sim
@@ -225,10 +259,10 @@ sim:
   session_id: sub-sim001_task-cambridge_gambling_seed0
   log_path: outputs/sim/sub-sim001_task-cambridge_gambling_seed0_sim_events.jsonl
   policy: warn
-  default_rt_s: 0.2
+  default_rt_s: 0.25
   clamp_rt: false
   responder:
     type: scripted
     kwargs:
       key: f
-      rt_s: 0.25
+      rt_s: 0.24
