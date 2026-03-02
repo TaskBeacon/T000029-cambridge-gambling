@@ -2,6 +2,37 @@
 
 All notable development changes for `T000029-cambridge-gambling` are documented here.
 
+## [v0.2.1-dev] - 2026-03-02
+
+### Changed
+- Standardized `main.py` to the shared single-flow `human|qa|sim` runtime pattern used across repaired tasks.
+- Replaced `src/run_trial.py` MID-template leftovers with CGT-native trial logic:
+  - `fixation -> color_choice -> bet_choice -> feedback -> iti`
+  - explicit red/blue choice stage and proportional bet stage
+  - color-timeout no-bet branch and bet-timeout auto-bet branch.
+- Added config-driven localization dictionaries and rendering templates in all configs:
+  - `task.color_labels`, `task.order_labels`, `task.delta`
+  - `stimuli.box_token_template`, `stimuli.bet_option_template`.
+- Rewrote reference artifacts to current contract schema:
+  - `references/references.yaml`
+  - `references/references.md`
+  - `references/parameter_mapping.md`
+  - `references/stimulus_mapping.md`
+  - `references/task_logic_audit.md`
+
+### Fixed
+- Fixed reference YAML parse failures caused by colon-containing fields.
+- Restored missing contract-required headings/table columns for all reference artifacts.
+- Restored QA-required CGT output columns (`bet_order`, `red_boxes`, `blue_boxes`, `color_response_key`, `color_timed_out`, `bet_percent`, `bet_timed_out`, `won`, `net_change`, `points_after`).
+
+### Validation
+- `python -m py_compile main.py src/run_trial.py`
+- `python e:/Taskbeacon/psyflow/skills/task-build/scripts/check_task_standard.py --task-path e:/Taskbeacon/T000029-cambridge-gambling`
+- `psyflow-qa e:/Taskbeacon/T000029-cambridge-gambling --no-maturity-update`
+- `python main.py sim --config config/config_scripted_sim.yaml`
+- `python main.py sim --config config/config_sampler_sim.yaml`
+- `python -m psyflow.validate e:/Taskbeacon/T000029-cambridge-gambling`
+
 ## [v0.2.0-dev] - 2026-02-19
 
 ### Changed

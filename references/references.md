@@ -1,23 +1,23 @@
-﻿# References
+# References
 
 - Task ID: `T000029`
-- Generated at: `2026-02-19T13:45:00Z`
-- Selection policy: `openalex_filter_plus_manual_curation`
-- Citation threshold: `100` (supplemental lower-citation papers retained for protocol-specific implementation details)
+- Generated at: `2026-02-19T18:35:00Z`
+- Selection policy: `manual_curation_literature_first`
+- Citation threshold: `100`
 
 ## Selected Papers
 
-| ID | Year | Citations | Journal | High Impact | Title |
-|---|---:|---:|---|---|---|
-| W2132469266 | 1999 | 1113 | Neuropsychopharmacology | yes | Dissociable Deficits in the Decision-Making Cognition of Chronic Amphetamine Abusers, Opiate Abusers, Patients with Focal Damage to Prefrontal Cortex, and Tryptophan-Depleted Normal Volunteers Evidence for Monoaminergic Mechanisms |
-| W2109668460 | 2008 | 614 | Brain | yes | Differential effects of insular and ventromedial prefrontal cortex lesions on risky decision-making |
-| W2085433082 | 2003 | 301 | Neuropsychologia | no | The contributions of lesion laterality and lesion volume to decision-making impairment following frontal lobe damage |
-| W2097485712 | 2011 | 108 | Brain | yes | Parcellating the neuroanatomical basis of impaired decision-making in traumatic brain injury |
-| W2016985323 | 2014 | 46 | Brain and Behavior | no | Decision-making deficits in patients diagnosed with disordered gambling using the Cambridge Gambling task: the effects of substance use disorder comorbidity |
-| W2983221917 | 2019 | 46 | Drug and Alcohol Dependence | no | A computational model of the Cambridge gambling task with applications to substance use disorders |
+| ID | Year | Citations | Journal | High Impact | Open Access | Title |
+|---|---:|---:|---|---|---|---|
+| W1978492017 | 2001 | 463 | Neuropsychologia | no | yes | Neural systems underlying risky decision making in the Cambridge Gambling Task |
+| W2010490259 | 2001 | 675 | Brain | yes | yes | Dissociable effects of lesions to the human prefrontal cortex on risky decision making |
+| W2091361525 | 2011 | 157 | Journal of Clinical and Experimental Neuropsychology | no | yes | Age-related differences in performance on the Cambridge Gambling Task |
+| W1992731065 | 2005 | 143 | Addiction Biology | no | yes | Risk taking and decision making in substance dependence using the Cambridge Gambling Task |
+| W2102212556 | 2012 | 121 | Psychological Assessment | no | yes | Cambridge Gambling Task performance in healthy adults |
 
 ## Notes
 
-- Core CGT workflow is anchored to high-citation lesion and psychopharmacology studies.
-- Two lower-citation but open-access papers are retained because they explicitly document actionable implementation details (bet percentages and timeout behavior).
-- Parameter decisions that are not explicitly fixed by one canonical protocol are marked `inferred` in `parameter_mapping.md`.
+- `W1978492017` anchors the two-stage CGT workflow: explicit probability judgment followed by stake selection.
+- `W2010490259` supports majority-choice quality and explicit-risk decision metrics.
+- `W1992731065` supports betting-magnitude and delay-aversion style summary endpoints.
+- `W2091361525` and `W2102212556` inform endpoint reporting and practical trial-volume profiles.

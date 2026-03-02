@@ -45,9 +45,16 @@ task:
     - "4"
     - "5"
   seed_mode: same_across_sub
+  delta: 1
   language: Chinese
   voice_name: zh-CN-YunyangNeural
   voice_enabled: false
+  color_labels:
+    red: 红色
+    blue: 蓝色
+  order_labels:
+    ascending: 升序
+    descending: 降序
 timing:
   fixation_duration: [0.10, 0.16]
   color_choice_deadline: 0.65
@@ -106,6 +113,14 @@ stimuli:
     wrapWidth: 980
     pos: [0, 80]
     font: SimHei
+  box_token_template:
+    type: text
+    text: "■"
+    color: [0.95, 0.25, 0.25]
+    height: 56
+    wrapWidth: 80
+    pos: [0, 150]
+    font: SimHei
   bet_prompt:
     type: text
     text: "请选择下注比例（{order_label}）"
@@ -121,6 +136,14 @@ stimuli:
     height: 24
     wrapWidth: 1080
     pos: [0, -245]
+    font: SimHei
+  bet_option_template:
+    type: text
+    text: "5%"
+    color: [0.95, 0.95, 0.95]
+    height: 34
+    wrapWidth: 140
+    pos: [0, -70]
     font: SimHei
   feedback_outcome:
     type: text

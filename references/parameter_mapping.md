@@ -1,25 +1,22 @@
-﻿# Parameter Mapping
+# Parameter Mapping
 
-| Parameter | Implemented Value | Source Paper ID | Confidence | Rationale |
-|---|---|---|---|---|
-| `task.conditions` | `['gambling']` | `W2132469266` | `high` | CGT trials are defined by explicit box-probability and bet-order factors, not MID-style condition labels. |
-| `task.total_blocks` | `2` | `W2097485712` | `inferred` | Two-block structure used to expose both ascending and descending bet-order contexts while keeping runtime practical. |
-| `task.trial_per_block` | `36` | `W2132469266` | `inferred` | Keeps 72 total trials, matching common CGT-scale study runs. |
-| `task.red_key` | `f` | `W2132469266` | `inferred` | Stable binary color-choice mapping for explicit probability decisions. |
-| `task.blue_key` | `j` | `W2132469266` | `inferred` | Stable binary color-choice mapping for explicit probability decisions. |
-| `task.bet_keys` | `['1','2','3','4','5']` | `W2016985323` | `inferred` | Five-key mapping aligns with five discrete betting percentages. |
-| `timing.color_choice_deadline` | `3.0 s` | `W2097485712` | `inferred` | Bounded response window supports timeout logging and consistent RT collection. |
-| `timing.bet_choice_deadline` | `3.5 s` | `W2016985323` | `inferred` | Implements explicit bet-selection window with deterministic timeout handling. |
-| `timing.feedback_duration` | `1.0 s` | `W2109668460` | `inferred` | Dedicated post-outcome display stage for synchronized event logging. |
-| `controller.initial_points` | `100` | `W2132469266` | `inferred` | Provides a bounded starting bankroll for proportional betting updates. |
-| `controller.box_ratios` | `[[9,1],[8,2],[7,3],[6,4]]` | `W2016985323` | `high` | Matches canonical CGT explicit-probability ratio set. |
-| `controller.bet_options` | `[5,25,50,75,95]` | `W2016985323` | `high` | Directly follows documented CGT betting percentages. |
-| `controller.block_order` | `['ascending','descending']` | `W2016985323` | `high` | Captures order-manipulation factor underlying delay-aversion metrics. |
-| `run_trial.timeout_rule` | `bet timeout auto-selects last displayed percentage` | `W2016985323` | `high` | Explicitly documented in protocol description. |
-| `run_trial.token_probability` | `P(red)=red_boxes/10, P(blue)=blue_boxes/10` | `W2132469266` | `high` | Probability of outcome follows visible box distribution by design. |
-| `scoring.rule` | `delta = ± round(points_before * bet_percent / 100)` | `W2132469266` | `inferred` | Implements proportional stake updates consistent with CGT point betting behavior. |
-| `triggers.map.choice_onset` | `30` | `W2109668460` | `inferred` | Marks onset of explicit probability decision stage for synchronization. |
-| `triggers.map.bet_onset` | `40` | `W2097485712` | `inferred` | Marks onset of betting stage for event-aligned analyses. |
-| `triggers.map.bet_key_1..5` | `41..45` | `W2097485712` | `inferred` | Separates each bet-key response event for traceability. |
-| `triggers.map.feedback_onset` | `50` | `W2109668460` | `inferred` | Marks outcome reveal after color+bet decisions. |
-| `summary.delay_aversion` | `mean_bet(descending) - mean_bet(ascending)` | `W2097485712` | `inferred` | Operationalizes early-bet tendency under order manipulation. |
+## Mapping Table
+
+| Parameter ID | Config Path | Implemented Value | Source Paper ID | Evidence (quote/figure/table) | Decision Type | Notes |
+|---|---|---|---|---|---|---|
+| task.conditions | `task.conditions` | `['gambling']` | W1978492017 | CGT is implemented as one explicit-risk trial stream with two within-trial decisions. | inferred | Color-choice and bet-choice phases carry primary semantics. |
+| task.keys.color | `task.red_key`, `task.blue_key` | `f` for red, `j` for blue | W2010490259 | First decision is a binary color-probability judgment. | inferred | Keys are configurable for localization/hardware constraints. |
+| task.keys.bet | `task.bet_keys` | `['1','2','3','4','5']` | W1992731065 | Second decision selects bet proportion from ordered options. | inferred | Response keys map to on-screen percentage options. |
+| task.localization.labels | `task.color_labels`, `task.order_labels` | red/blue labels and ascending/descending labels | W2102212556 | Participant-facing choice and order labels must be explicit in CGT instructions. | inferred | Runtime avoids hardcoded labels for localization. |
+| timing.fixation | `timing.fixation_duration` | `[0.3, 0.6]` s | W1978492017 | Trial event separation with short fixation is standard in CGT variants. | inferred | Sampled per trial by controller. |
+| timing.color_choice_deadline | `timing.color_choice_deadline` | `3.0` s | W2010490259 | Explicit but time-limited color selection is a core CGT component. | inferred | Timeout branch yields no-bet outcome. |
+| timing.bet_choice_deadline | `timing.bet_choice_deadline` | `3.5` s | W1992731065 | Bet decision phase uses bounded response windows in computerized implementations. | inferred | Timeout auto-selects last displayed bet option. |
+| timing.feedback | `timing.feedback_duration` | `1.0` s | W2091361525 | Outcome and points update feedback support trialwise performance monitoring. | inferred | Same trigger code for all feedback branches. |
+| timing.iti | `timing.iti_duration` | `[0.3, 0.6]` s | W2102212556 | ITI jitter reduces expectancy and response carry-over. | inferred | Sampled per trial by controller. |
+| controller.ratios | `controller.box_ratios` | `[[9,1],[8,2],[7,3],[6,4]]` | W1978492017 | CGT uses explicit 10-box red/blue ratios for probability judgment. | inferred | Ratio is sampled trialwise and logged (`ratio_label`). |
+| controller.bet_options | `controller.bet_options` | `[5,25,50,75,95]` | W1992731065 | Canonical CGT betting percentages use five discrete stake levels. | supported | Reversed order in descending blocks. |
+| controller.block_order | `controller.block_order` | `ascending`, `descending` | W1992731065 | Delay aversion is assessed via order effects on selected bet percentages. | inferred | Delay-aversion proxy = descending mean - ascending mean. |
+| controller.initial_points | `controller.initial_points` | `100` | W2102212556 | Points ledger is needed to compute proportional gains/losses from bet percentages. | inferred | Bet amount is proportional to current points. |
+| trigger.choice | `triggers.map.choice_onset`, `choice_red`, `choice_blue`, `color_timeout` | `30`, `31`, `32`, `33` | W2010490259 | Color-choice onset/response/timeout events are core CGT stage markers. | inferred | Response trigger emitted after key mapping. |
+| trigger.bet | `triggers.map.bet_onset`, `bet_key_1..5`, `bet_timeout` | `40`, `41..45`, `46` | W1992731065 | Bet decision stage needs key-specific event coding and timeout handling. | inferred | Bet key trigger index follows displayed key order. |
+| trigger.feedback_iti | `triggers.map.feedback_onset`, `iti_onset` | `50`, `60` | W2102212556 | Outcome and inter-trial stage boundaries are required for auditability. | inferred | Feedback branch type is encoded in trial data. |

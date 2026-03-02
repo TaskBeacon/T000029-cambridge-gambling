@@ -1,14 +1,12 @@
-﻿# Stimulus Mapping
+# Stimulus Mapping
 
-Task: `Cambridge Gambling Task`
+## Mapping Table
 
-| Condition | Implemented Stimulus IDs | Source Paper ID | Evidence (quote/figure/table) | Implementation Mode | Notes |
-|---|---|---|---|---|---|
-| `gambling` | `trial_prompt`, `score_text`, `ratio_text`, dynamic `box_rect_*` (10 red/blue boxes by ratio), `color_key_hint`, `bet_prompt`, `bet_key_hint`, dynamic `bet_box_*`, `feedback_outcome`, `feedback_auto_bet`, `feedback_color_timeout`, `fixation` | `W2132469266` | CGT separates explicit probability judgment from betting under visible red/blue box ratios. | `psychopy_builtin` | Trial runtime constructs concrete red/blue box arrays and per-trial betting options; no abstract condition labels are shown to participants. |
-| `betting_order_factor` | dynamic `bet_box_*` value ordering (`ascending` or `descending`) with keys `1-5` | `W2016985323` | Bet options are the canonical five percentages (5/25/50/75/95) with order manipulation and timeout rule. | `psychopy_builtin` | Timeout in bet stage auto-selects the last displayed percentage to preserve paradigm flow. |
-| `all_conditions` | `instruction_text`, `block_break`, `good_bye`, `fixation` | `W2109668460` | Shared envelope screens provide instruction, pacing, and summary for explicit-risk decision runs. | `psychopy_builtin` | All participant-facing text remains Chinese and UTF-8 clean across human/QA/sim profiles. |
-
-Implementation mode legend:
-- `psychopy_builtin`: stimulus rendered via PsychoPy primitives in config or dynamic trial code.
-- `generated_reference_asset`: task-specific synthetic assets generated from reference-described stimulus rules.
-- `licensed_external_asset`: externally sourced licensed media with protocol linkage.
+| Condition | Stage/Phase | Stimulus IDs | Participant-Facing Content | Source Paper ID | Evidence (quote/figure/table) | Implementation Mode | Asset References | Notes |
+|---|---|---|---|---|---|---|---|---|
+| `gambling` | fixation | `fixation` | Central `+` before decision stages. | W1978492017 | CGT stage boundaries are separated by brief baseline intervals. | psychopy_builtin | `config/*.yaml -> stimuli.fixation` | Duration sampled per trial. |
+| `gambling` | color_choice | `trial_prompt`, `score_text`, `ratio_text`, `box_token_template` (x10 rebuilt), `color_key_hint` | Participant judges whether the token is more likely under red or blue boxes. | W2010490259 | First CGT decision is explicit probability judgment from visible red/blue box ratio. | psychopy_builtin | `config/*.yaml -> stimuli.trial_prompt/score_text/ratio_text/color_key_hint/box_token_template` | Box colors and positions are generated from trial ratio and side assignment. |
+| `gambling` | bet_choice | `score_text`, `ratio_text`, `box_token_template` (x10 rebuilt), `bet_prompt`, `bet_option_template` (x5 rebuilt), `bet_key_hint` | Participant chooses a bet percentage under ascending/descending option order. | W1992731065 | Second CGT decision selects stake proportion; order manipulations index delay aversion. | psychopy_builtin | `config/*.yaml -> stimuli.bet_prompt/bet_option_template/bet_key_hint` | Bet legend and key-to-percent mapping are generated each trial. |
+| `gambling` | feedback | `feedback_outcome` or `feedback_auto_bet` or `feedback_color_timeout` | Outcome screen reports chosen color, token color, stake, and points update. | W2102212556 | Trialwise feedback enables point-based risk behavior tracking. | psychopy_builtin | `config/*.yaml -> stimuli.feedback_*` | Color-timeout branch skips betting and preserves points. |
+| `gambling` | iti | `fixation` | Short fixation before the next trial. | W2102212556 | ITI supports independent trial epochs. | psychopy_builtin | `config/*.yaml -> stimuli.fixation` | Trigger: `iti_onset`. |
+| `all_conditions` | envelope | `instruction_text`, `block_break`, `good_bye` | Instructions and block/final metrics including delay-aversion summary. | W1992731065 | CGT reporting includes betting profile and order-related metrics. | psychopy_builtin | `config/*.yaml -> stimuli.instruction_text/block_break/good_bye` | All participant-facing labels remain config-defined. |
