@@ -1,6 +1,6 @@
 # Task Plot Audit
 
-- generated_at: 2026-03-19T08:37:11
+- generated_at: 2026-03-19T09:19:27
 - mode: existing
 - task_path: E:\xhmhc\TaskBeacon\T000029-cambridge-gambling
 
@@ -48,17 +48,17 @@
 - output_file: task_flow.png
 - dpi: 300
 - max_conditions: 3
-- screens_per_timeline: 6
-- screen_overlap_ratio: 0.1
+- screens_per_timeline: 5
+- screen_overlap_ratio: 0.0
 - screen_slope: 0.08
-- screen_slope_deg: 25.0
-- screen_aspect_ratio: 1.4545454545454546
+- screen_slope_deg: 34.0
+- screen_aspect_ratio: 1.65
 - qa_mode: local
 - auto_layout_feedback:
-  - layout pass 1: crop-only; left=0.031, right=0.033, blank=0.119
+  - layout pass 1: crop-only; left=0.039, right=0.041, blank=0.146
 - auto_layout_feedback_records:
   - pass: 1
-    metrics: {'left_ratio': 0.0313, 'right_ratio': 0.0332, 'blank_ratio': 0.1194}
+    metrics: {'left_ratio': 0.039, 'right_ratio': 0.0414, 'blank_ratio': 0.1456}
 - validator_warnings:
   - timelines[0].phases[1] missing duration_ms; renderer will annotate as n/a.
   - timelines[0].phases[2] missing duration_ms; renderer will annotate as n/a.
@@ -66,10 +66,10 @@
 
 ## 7. Output files and checksums
 
-- E:\xhmhc\TaskBeacon\T000029-cambridge-gambling\references\task_plot_spec.yaml: sha256=0539a411c17466cffd0a43da970966c546746dd5c30d0d4bd2b3e5e3684860c4
-- E:\xhmhc\TaskBeacon\T000029-cambridge-gambling\references\task_plot_spec.json: sha256=bd920065a3ce5a9bdec66ceefc634c6b8d47c37f97c051351b3ead2c97742217
+- E:\xhmhc\TaskBeacon\T000029-cambridge-gambling\references\task_plot_spec.yaml: sha256=8e02061a27a816a3e23d09a167e9cc2de28219fdf78d982122fd49b6b4a2aaef
+- E:\xhmhc\TaskBeacon\T000029-cambridge-gambling\references\task_plot_spec.json: sha256=1d84587a3ea71656e45103d04fdd1f199dfd090a03a8a81f3324cc74b65fbde7
 - E:\xhmhc\TaskBeacon\T000029-cambridge-gambling\references\task_plot_source_excerpt.md: sha256=2dff4466dd3d8064e4c96b38a6b59234451ad6c25ef8bfaa652877904d9f8288
-- E:\xhmhc\TaskBeacon\T000029-cambridge-gambling\task_flow.png: sha256=eb7fd8f3abdac175869deb3c7f307ab8bdb1c47f1e81ea04352efab3453cb3a9
+- E:\xhmhc\TaskBeacon\T000029-cambridge-gambling\task_flow.png: sha256=778e849d9002cd2e58b9344350d67bb56b124a7020841607994e4e4c4b987170
 
 ## 8. Inferred/uncertain items
 

@@ -12,20 +12,20 @@ task_plot_spec:
       background: white
     layout:
       max_conditions: 3
-      screens_per_timeline: 6
-      screen_overlap_ratio: 0.1
+      screens_per_timeline: 5
+      screen_overlap_ratio: 0.0
       screen_slope: 0.08
-      screen_slope_deg: 25.0
+      screen_slope_deg: 34.0
       timeline_gap: 0.18
-      screen_aspect_ratio: 1.4545454545454546
-      left_margin: 0.2
-      right_margin: 0.03
-      top_margin: 0.03
-      bottom_margin: 0.05
-      condition_label_gap: 0.014
-      phase_label_pad: 0.01
-      duration_label_gap: 0.006
-      timeline_arrow_gap: 0.01
+      screen_aspect_ratio: 1.65
+      left_margin: 0.18
+      right_margin: 0.04
+      top_margin: 0.04
+      bottom_margin: 0.06
+      condition_label_gap: 0.016
+      phase_label_pad: 0.012
+      duration_label_gap: 0.008
+      timeline_arrow_gap: 0.012
       timeline_arrow_screen_clearance: 0.007
       timeline_arrow_text_clearance: 0.01
       timeline_arrow_extra_per_screen: 0.015
@@ -73,7 +73,7 @@ task_plot_spec:
         summary: '请判断黄色球更可能在哪种颜色下 + 当前分数：… + 本轮比例：红 … : 蓝 …（…） + 10 boxes (9 red /
           1 blue) + 选择颜色：…=红色，…=蓝色'
         modality: visual
-        draw_hint: text
+        draw_hint: shape
         render_items:
         - kind: text
           text: 请判断黄色球更可能在哪种颜色下
@@ -196,7 +196,7 @@ task_plot_spec:
         summary: '当前分数：… + 本轮比例：红 … : 蓝 …（…） + 10 boxes (9 red / 1 blue) + 请选择下注比例（…）
           + Bet options: Score: 100 | Bet options: 5% / 2… + 按键对应：…。若超时将自动选择最后一个比例。'
         modality: visual
-        draw_hint: text
+        draw_hint: shape
         render_items:
         - kind: text
           text: '本轮比例：红 … : 蓝 …（…）'

@@ -277,3 +277,18 @@ controller:
     - descending
   random_seed: null
   enable_logging: true
+
+task_plot:
+  max_conditions: 3
+  screens_per_timeline: 5
+  screen_overlap_ratio: 0.0
+  screen_slope_deg: 34.0
+  screen_aspect_ratio: 1.65
+  left_margin: 0.18
+  right_margin: 0.04
+  top_margin: 0.04
+  bottom_margin: 0.06
+  condition_label_gap: 0.016
+  phase_label_pad: 0.012
+  duration_label_gap: 0.008
+  timeline_arrow_gap: 0.012
