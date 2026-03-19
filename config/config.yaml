@@ -265,11 +265,6 @@ triggers:
   policy:
     strict: false
 controller:
-  fixation_duration: [0.3, 0.6]
-  color_choice_deadline: 3.0
-  bet_choice_deadline: 3.5
-  feedback_duration: 1.0
-  iti_duration: [0.3, 0.6]
   initial_points: 100
   box_ratios:
     - [9, 1]

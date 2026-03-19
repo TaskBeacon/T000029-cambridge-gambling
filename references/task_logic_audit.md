@@ -23,6 +23,7 @@
 - QA/sim profiles: `1` block x `20` trials.
 - Block order context from controller (`ascending`/`descending`) determines displayed bet option order.
 - Trial specification from `Controller.build_trial(block_idx)` includes ratio, majority/minority color, token color, and ordered bet options.
+- Fixation and ITI jitter are pulled directly from `timing.fixation_duration` / `timing.iti_duration` and passed to `StimUnit.show(...)`; the controller no longer samples these durations.
 
 ### Trial State Machine
 
@@ -112,10 +113,12 @@ All participant-facing labels are config-sourced (`task.color_labels`, `task.ord
 - `main.py` uses one standardized execution path across `human|qa|sim` with shared initialization and runtime-context handling.
 - `src/run_trial.py` removes MID-template remnants and implements CGT-native phases (`color_choice`, `bet_choice`) with explicit timeout branches.
 - Bet-choice context exposes `bet_key_map` to simulation responders, enabling deterministic mapping from key to displayed percentage.
+- Jittered fixation/ITI durations stay config-driven and are handed to PsyFlow directly instead of being resampled in task-local controller code.
 - Trial outputs include QA-required fields (`bet_order`, `red_boxes`, `blue_boxes`, `color_response_key`, `color_timed_out`, `bet_percent`, `bet_timed_out`, `won`, `net_change`, `points_after`).
 
 ## 8. Inference Log
 
 - Exact fixation/ITI jitter values and response deadlines are implementation-level inferences aligned to practical CGT runtime constraints.
+- The controller is intentionally limited to CGT stateful policy (ratio sampling, block order, and point updates); timing ranges are configured in `timing.*` and passed through unchanged.
 - Auto-bet-on-timeout policy (selecting last displayed option) is an inferred operationalization to preserve full-trial point dynamics in time-limited runs.
 - Display geometry for 10 boxes and 5 bet options is an inferred visual arrangement preserving explicit probability and stake semantics.

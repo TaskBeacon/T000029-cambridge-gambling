@@ -17,19 +17,6 @@ def _deadline_s(value: Any) -> float | None:
     return None
 
 
-def _as_duration(controller, value: Any, default_value: float) -> float:
-    if hasattr(controller, "sample_duration"):
-        return float(controller.sample_duration(value, default_value))
-    if isinstance(value, (int, float)):
-        return float(value)
-    if isinstance(value, (list, tuple)) and value:
-        try:
-            return float(max(value))
-        except Exception:
-            return float(default_value)
-    return float(default_value)
-
-
 def _as_dict(value: Any) -> dict:
     return value if isinstance(value, dict) else {}
 
@@ -124,11 +111,11 @@ def run_trial(
     color_labels = _as_dict(getattr(settings, "color_labels", {}))
     order_labels = _as_dict(getattr(settings, "order_labels", {}))
 
-    fixation_duration = _as_duration(controller, settings.fixation_duration, 0.45)
+    fixation_duration = getattr(settings, "fixation_duration", (0.3, 0.6))
     color_deadline = float(settings.color_choice_deadline)
     bet_deadline = float(settings.bet_choice_deadline)
     feedback_duration = float(settings.feedback_duration)
-    iti_duration = _as_duration(controller, settings.iti_duration, 0.45)
+    iti_duration = getattr(settings, "iti_duration", (0.3, 0.6))
 
     majority_key = red_key if spec.majority_color == "red" else blue_key
     minority_key = blue_key if majority_key == red_key else red_key

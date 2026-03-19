@@ -33,11 +33,6 @@ class Controller:
 
     def __init__(
         self,
-        fixation_duration: list[float] | tuple[float, ...] | float = (0.3, 0.6),
-        color_choice_deadline: float = 3.0,
-        bet_choice_deadline: float = 3.5,
-        feedback_duration: float = 1.0,
-        iti_duration: list[float] | tuple[float, ...] | float = (0.3, 0.6),
         initial_points: int = 100,
         box_ratios: list[list[int]] | tuple[tuple[int, int], ...] | None = None,
         bet_options: list[int] | tuple[int, ...] | None = None,
@@ -45,11 +40,6 @@ class Controller:
         random_seed: int | None = None,
         enable_logging: bool = True,
     ):
-        self.fixation_duration = fixation_duration
-        self.color_choice_deadline = max(0.2, float(color_choice_deadline))
-        self.bet_choice_deadline = max(0.2, float(bet_choice_deadline))
-        self.feedback_duration = max(0.1, float(feedback_duration))
-        self.iti_duration = iti_duration
         self.initial_points = max(1, int(initial_points))
         self.enable_logging = bool(enable_logging)
 
@@ -68,11 +58,6 @@ class Controller:
     def from_dict(cls, config: dict[str, Any]) -> "Controller":
         cfg = dict(config or {})
         return cls(
-            fixation_duration=cfg.get("fixation_duration", (0.3, 0.6)),
-            color_choice_deadline=cfg.get("color_choice_deadline", 3.0),
-            bet_choice_deadline=cfg.get("bet_choice_deadline", 3.5),
-            feedback_duration=cfg.get("feedback_duration", 1.0),
-            iti_duration=cfg.get("iti_duration", (0.3, 0.6)),
             initial_points=cfg.get("initial_points", 100),
             box_ratios=cfg.get("box_ratios", None),
             bet_options=cfg.get("bet_options", None),
@@ -172,20 +157,6 @@ class Controller:
 
     def next_trial_id(self) -> int:
         return int(self.trial_count_total) + 1
-
-    def sample_duration(self, value: Any, default: float) -> float:
-        if isinstance(value, (int, float)):
-            return max(0.0, float(value))
-        if isinstance(value, (list, tuple)) and len(value) >= 2:
-            try:
-                low = float(value[0])
-                high = float(value[1])
-            except Exception:
-                return max(0.0, float(default))
-            if high < low:
-                low, high = high, low
-            return max(0.0, float(self.rng.uniform(low, high)))
-        return max(0.0, float(default))
 
     def _sample_ratio(self) -> tuple[int, int]:
         return self.rng.choice(self.box_ratios)

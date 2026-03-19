@@ -1,6 +1,19 @@
-﻿# CHANGELOG
+# CHANGELOG
 
 All notable development changes for `T000029-cambridge-gambling` are documented here.
+
+## [v0.2.2-dev] - 2026-03-19
+
+### Changed
+- Removed task-local duration sampling from the controller; fixation/ITI jitter now come directly from `timing.fixation_duration` and `timing.iti_duration`.
+- Refreshed the task-flow plot so the representative timeline shows participant-visible CGT stimuli rather than abstract placeholders.
+- Updated `README.md`, `taskbeacon.yaml`, and the CGT audit/mapping references to match the slimmer controller boundary and current runtime contract.
+- Aligned `H000029-cambridge-gambling` to the revised Python task structure and fixed the browser preview configuration text.
+
+### Validation
+- `python -m py_compile main.py src/run_trial.py src/utils.py`
+- `python -m psyflow.validate e:/Taskbeacon/T000029-cambridge-gambling`
+- `npm run typecheck` in `psyflow-web`
 
 ## [v0.2.1-dev] - 2026-03-02
 
@@ -75,3 +88,4 @@ All notable development changes for `T000029-cambridge-gambling` are documented 
 - `psyflow-qa <task_path> --config config/config_qa.yaml --no-maturity-update`
 - `python main.py sim --config config/config_scripted_sim.yaml`
 - `python main.py sim --config config/config_sampler_sim.yaml`
+

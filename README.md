@@ -1,15 +1,15 @@
 ﻿# Cambridge Gambling Task
 
-![Maturity: draft](https://img.shields.io/badge/Maturity-draft-64748b?style=flat-square&labelColor=111827)
+![Maturity: smoke_tested](https://img.shields.io/badge/Maturity-smoke_tested-16a34a?style=flat-square&labelColor=111827)
 
 | Field | Value |
 |---|---|
 | Name | Cambridge Gambling Task |
-| Version | v0.2.0-dev |
+| Version | v0.2.2-dev |
 | URL / Repository | https://github.com/TaskBeacon/T000029-cambridge-gambling |
 | Short Description | Explicit-risk decision task with red/blue probability judgment and proportional betting. |
 | Created By | TaskBeacon |
-| Date Updated | 2026-02-19 |
+| Date Updated | 2026-03-19 |
 | PsyFlow Version | 0.1.9 |
 | PsychoPy Version | 2025.1.1 |
 | Modality | Behavior |
@@ -24,11 +24,13 @@ Unlike MID-style templates, this task has no cue-target reaction stage. The core
 
 ## 2. Task Flow
 
+![Task Flow](task_flow.png)
+
 ### Block-Level Flow
 
 | Step | Description |
 |---|---|
-| 1. Block context | Controller sets block-level bet order (`ascending` or `descending`). |
+| 1. Block context | Controller sets block-level bet order (`ascending` or `descending`) and tracks points. |
 | 2. Trial execution | Each trial samples a box ratio, majority color side, and token outcome probability. |
 | 3. Block summary | Reports score, quality-of-decision, win rate, mean bet, RTs, timeout counts, delay-aversion proxy. |
 | 4. Task summary | Final metrics shown with ascending vs descending bet comparison. |
@@ -37,11 +39,11 @@ Unlike MID-style templates, this task has no cue-target reaction stage. The core
 
 | Step | Description |
 |---|---|
-| Fixation | Short jittered fixation (`+`). |
+| Fixation | Short jittered fixation (`+`) from `timing.fixation_duration`. |
 | Color choice | Show 10 red/blue boxes + ratio text; participant chooses `F=红` or `J=蓝`. |
 | Bet choice | Show five bet options (5/25/50/75/95) ordered by block context; participant selects with `1-5`. |
 | Feedback | Reveal token color, applied stake, point delta, and updated score. |
-| ITI | Short jittered fixation before next trial. |
+| ITI | Short jittered fixation before next trial from `timing.iti_duration`. |
 
 ### Controller Logic
 
@@ -88,9 +90,9 @@ Unlike MID-style templates, this task has no cue-target reaction stage. The core
 | Name | Type | Description |
 |---|---|---|
 | `trial_prompt`, `score_text`, `ratio_text`, `color_key_hint` | text | Color-choice stage envelope with explicit ratio and key mapping. |
-| dynamic `box_rect_*` | rect | Ten red/blue boxes generated per trial from sampled ratio and side assignment. |
+| `box_token_template` | rect | Ten red/blue boxes generated per trial from sampled ratio and side assignment. |
 | `bet_prompt`, `bet_key_hint` | text | Bet-choice instruction and key legend. |
-| dynamic `bet_box_*` | rect + text | Five on-screen bet options mapped to keys `1-5` in block-specific order. |
+| `bet_option_template` | text | Five on-screen bet options mapped to keys `1-5` in block-specific order. |
 | `feedback_outcome`, `feedback_auto_bet`, `feedback_color_timeout` | text | Outcome and timeout-specific feedback messages. |
 | `fixation`, `block_break`, `good_bye`, `instruction_text` | text | Shared trial separators and task envelope screens. |
 
