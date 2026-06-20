@@ -3,18 +3,9 @@ from __future__ import annotations
 from functools import partial
 from typing import Any
 
-from psyflow import StimUnit, set_trial_context
+from psyflow import StimUnit, next_trial_id, resolve_deadline, set_trial_context
 
-
-def _deadline_s(value: Any) -> float | None:
-    if isinstance(value, (int, float)):
-        return float(value)
-    if isinstance(value, (list, tuple)) and value:
-        try:
-            return float(max(value))
-        except Exception:
-            return None
-    return None
+from .utils import add_bet_options, add_boxes, cgt_condition_to_trial_spec
 
 
 def _as_dict(value: Any) -> dict:
@@ -23,63 +14,6 @@ def _as_dict(value: Any) -> dict:
 
 def _as_list(value: Any) -> list:
     return list(value) if isinstance(value, (list, tuple)) else []
-
-
-def _box_positions() -> list[tuple[float, float]]:
-    return [(-450.0 + (100.0 * idx), 150.0) for idx in range(10)]
-
-
-def _bet_positions() -> list[tuple[float, float]]:
-    return [(-320.0, -70.0), (-160.0, -70.0), (0.0, -70.0), (160.0, -70.0), (320.0, -70.0)]
-
-
-def _color_name(color_token: str, labels: dict[str, Any]) -> str:
-    token = str(color_token).strip().lower()
-    if token == "red":
-        return str(labels.get("red", "red"))
-    if token == "blue":
-        return str(labels.get("blue", "blue"))
-    return token
-
-
-def _draw_boxes(unit: StimUnit, stim_bank, *, red_boxes: int, blue_boxes: int, red_left: bool) -> None:
-    left_color = "red" if red_left else "blue"
-    right_color = "blue" if red_left else "red"
-    left_count = int(red_boxes) if red_left else int(blue_boxes)
-    right_count = int(blue_boxes) if red_left else int(red_boxes)
-
-    color_tokens = [left_color] * left_count + [right_color] * right_count
-    positions = _box_positions()
-    for idx in range(10):
-        color_token = color_tokens[idx] if idx < len(color_tokens) else right_color
-        fill_color = [0.92, 0.23, 0.23] if color_token == "red" else [0.24, 0.42, 0.95]
-        unit.add_stim(
-            stim_bank.rebuild(
-                "box_token_template",
-                text="■",
-                pos=positions[idx],
-                color=fill_color,
-            )
-        )
-
-
-def _draw_bet_options(unit: StimUnit, stim_bank, bet_options: list[int], bet_keys: list[str]) -> str:
-    positions = _bet_positions()
-    legend_parts: list[str] = []
-    for idx, pct in enumerate(bet_options):
-        if idx >= len(positions) or idx >= len(bet_keys):
-            break
-        key = str(bet_keys[idx]).strip()
-        label = f"{pct}%"
-        legend_parts.append(f"{key}={label}")
-        unit.add_stim(
-            stim_bank.rebuild(
-                "bet_option_template",
-                text=label,
-                pos=positions[idx],
-            )
-        )
-    return " / ".join(legend_parts)
 
 
 def run_trial(
@@ -94,11 +28,9 @@ def run_trial(
     block_idx=None,
 ):
     """Run one Cambridge Gambling trial with color and bet decisions."""
-    condition_name = str(condition).strip().lower()
-    trial_id = int(controller.next_trial_id()) if hasattr(controller, "next_trial_id") else 1
+    condition_name, spec = cgt_condition_to_trial_spec(condition)
+    trial_id = next_trial_id()
     block_idx_val = int(block_idx) if block_idx is not None else 0
-
-    spec = controller.build_trial(block_idx=block_idx_val)
 
     red_key = str(getattr(settings, "red_key", "f")).strip().lower()
     blue_key = str(getattr(settings, "blue_key", "j")).strip().lower()
@@ -111,11 +43,11 @@ def run_trial(
     color_labels = _as_dict(getattr(settings, "color_labels", {}))
     order_labels = _as_dict(getattr(settings, "order_labels", {}))
 
-    fixation_duration = getattr(settings, "fixation_duration", (0.3, 0.6))
+    fixation_duration = float(resolve_deadline(getattr(settings, "fixation_duration", 0.6)) or 0.6)
     color_deadline = float(settings.color_choice_deadline)
     bet_deadline = float(settings.bet_choice_deadline)
     feedback_duration = float(settings.feedback_duration)
-    iti_duration = getattr(settings, "iti_duration", (0.3, 0.6))
+    iti_duration = float(resolve_deadline(getattr(settings, "iti_duration", 0.6)) or 0.6)
 
     majority_key = red_key if spec.majority_color == "red" else blue_key
     minority_key = blue_key if majority_key == red_key else red_key
@@ -143,7 +75,7 @@ def run_trial(
         fixation,
         trial_id=trial_id,
         phase="fixation",
-        deadline_s=_deadline_s(fixation_duration),
+        deadline_s=resolve_deadline(fixation_duration),
         valid_keys=[],
         block_id=trial_data["block_id"],
         condition_id=condition_name,
@@ -174,7 +106,7 @@ def run_trial(
             ratio_label=spec.ratio_label,
         )
     )
-    _draw_boxes(color_choice, stim_bank, red_boxes=spec.red_boxes, blue_boxes=spec.blue_boxes, red_left=spec.red_left)
+    add_boxes(color_choice, stim_bank, red_boxes=spec.red_boxes, blue_boxes=spec.blue_boxes, red_left=spec.red_left)
     color_choice.add_stim(
         stim_bank.get_and_format(
             "color_key_hint",
@@ -186,7 +118,7 @@ def run_trial(
         color_choice,
         trial_id=trial_id,
         phase="color_choice",
-        deadline_s=_deadline_s(color_deadline),
+        deadline_s=resolve_deadline(color_deadline),
         valid_keys=color_keys,
         block_id=trial_data["block_id"],
         condition_id=condition_name,
@@ -206,18 +138,16 @@ def run_trial(
         keys=color_keys,
         duration=color_deadline,
         onset_trigger=settings.triggers.get("choice_onset"),
-        response_trigger=None,
+        response_trigger={
+            red_key: settings.triggers.get("choice_red"),
+            blue_key: settings.triggers.get("choice_blue"),
+        },
         timeout_trigger=settings.triggers.get("color_timeout"),
     )
     color_choice.to_dict(trial_data)
 
     color_response_key = str(color_choice.get_state("response", "")).strip().lower()
     color_timed_out = color_response_key not in color_keys
-    if color_response_key == red_key:
-        trigger_runtime.send(settings.triggers.get("choice_red"))
-    elif color_response_key == blue_key:
-        trigger_runtime.send(settings.triggers.get("choice_blue"))
-
     color_rt = color_choice.get_state("rt", None)
     color_rt_s = float(color_rt) if isinstance(color_rt, (int, float)) else None
 
@@ -265,15 +195,15 @@ def run_trial(
                 ratio_label=spec.ratio_label,
             )
         )
-        _draw_boxes(bet_choice, stim_bank, red_boxes=spec.red_boxes, blue_boxes=spec.blue_boxes, red_left=spec.red_left)
+        add_boxes(bet_choice, stim_bank, red_boxes=spec.red_boxes, blue_boxes=spec.blue_boxes, red_left=spec.red_left)
         bet_choice.add_stim(stim_bank.get_and_format("bet_prompt", order_label=order_label))
-        bet_legend = _draw_bet_options(bet_choice, stim_bank, display_bets, bet_keys_active)
+        bet_legend = add_bet_options(bet_choice, stim_bank, display_bets, bet_keys_active)
         bet_choice.add_stim(stim_bank.get_and_format("bet_key_hint", bet_legend=bet_legend))
         set_trial_context(
             bet_choice,
             trial_id=trial_id,
             phase="bet_choice",
-            deadline_s=_deadline_s(bet_deadline),
+            deadline_s=resolve_deadline(bet_deadline),
             valid_keys=bet_keys_active,
             block_id=trial_data["block_id"],
             condition_id=condition_name,
@@ -293,7 +223,10 @@ def run_trial(
             keys=bet_keys_active,
             duration=bet_deadline,
             onset_trigger=settings.triggers.get("bet_onset"),
-            response_trigger=None,
+            response_trigger={
+                key: settings.triggers.get(f"bet_key_{idx + 1}")
+                for idx, key in enumerate(bet_keys_active)
+            },
             timeout_trigger=settings.triggers.get("bet_timeout"),
         )
         bet_choice.to_dict(trial_data)
@@ -302,8 +235,6 @@ def run_trial(
         bet_timed_out = bet_response_key not in bet_key_map
 
         if not bet_timed_out:
-            key_idx = bet_keys_active.index(bet_response_key)
-            trigger_runtime.send(settings.triggers.get(f"bet_key_{key_idx + 1}"))
             bet_percent = int(bet_key_map[bet_response_key])
         else:
             bet_response_key = bet_keys_active[-1]
@@ -340,7 +271,7 @@ def run_trial(
         feedback,
         trial_id=trial_id,
         phase="feedback",
-        deadline_s=_deadline_s(feedback_duration),
+        deadline_s=resolve_deadline(feedback_duration),
         valid_keys=[],
         block_id=trial_data["block_id"],
         condition_id=condition_name,
@@ -369,7 +300,7 @@ def run_trial(
         iti,
         trial_id=trial_id,
         phase="iti",
-        deadline_s=_deadline_s(iti_duration),
+        deadline_s=resolve_deadline(iti_duration),
         valid_keys=[],
         block_id=trial_data["block_id"],
         condition_id=condition_name,

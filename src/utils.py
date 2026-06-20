@@ -37,13 +37,10 @@ class Controller:
         box_ratios: list[list[int]] | tuple[tuple[int, int], ...] | None = None,
         bet_options: list[int] | tuple[int, ...] | None = None,
         block_order: list[str] | tuple[str, ...] | None = None,
-        random_seed: int | None = None,
         enable_logging: bool = True,
     ):
         self.initial_points = max(1, int(initial_points))
         self.enable_logging = bool(enable_logging)
-
-        self.rng = random.Random(random_seed)
 
         self.box_ratios = self._normalize_ratios(box_ratios)
         self.bet_options = self._normalize_bet_options(bet_options)
@@ -62,7 +59,6 @@ class Controller:
             box_ratios=cfg.get("box_ratios", None),
             bet_options=cfg.get("bet_options", None),
             block_order=cfg.get("block_order", None),
-            random_seed=cfg.get("random_seed", None),
             enable_logging=bool(cfg.get("enable_logging", True)),
         )
 
@@ -155,46 +151,6 @@ class Controller:
             idx = 0
         return self.block_order[idx % len(self.block_order)]
 
-    def next_trial_id(self) -> int:
-        return int(self.trial_count_total) + 1
-
-    def _sample_ratio(self) -> tuple[int, int]:
-        return self.rng.choice(self.box_ratios)
-
-    def _sample_majority_color(self) -> str:
-        return COLOR_RED if self.rng.random() < 0.5 else COLOR_BLUE
-
-    def _sample_token_color(self, red_boxes: int, blue_boxes: int) -> str:
-        p_red = float(red_boxes) / float(max(1, red_boxes + blue_boxes))
-        return COLOR_RED if self.rng.random() < p_red else COLOR_BLUE
-
-    def build_trial(self, *, block_idx: int | None = None) -> TrialSpec:
-        order = self.current_order(block_idx)
-        major, minor = self._sample_ratio()
-        majority_color = self._sample_majority_color()
-        if majority_color == COLOR_RED:
-            red_boxes, blue_boxes = major, minor
-        else:
-            red_boxes, blue_boxes = minor, major
-
-        token_color = self._sample_token_color(red_boxes, blue_boxes)
-        minority_color = COLOR_BLUE if majority_color == COLOR_RED else COLOR_RED
-        ratio_label = f"{major}:{minor}"
-        bet_options = self.bet_options if order == ORDER_ASCENDING else tuple(reversed(self.bet_options))
-        red_left = self.rng.random() < 0.5
-
-        return TrialSpec(
-            order=order,
-            ratio_label=ratio_label,
-            red_boxes=int(red_boxes),
-            blue_boxes=int(blue_boxes),
-            majority_color=majority_color,
-            minority_color=minority_color,
-            token_color=token_color,
-            bet_options=tuple(int(v) for v in bet_options),
-            red_left=bool(red_left),
-        )
-
     def apply_bet_outcome(self, *, bet_percent: int, won: bool) -> dict[str, int]:
         points_before = int(self.current_points)
         pct = max(1, min(95, int(bet_percent)))
@@ -249,3 +205,153 @@ class Controller:
                 f"delta={int(delta)} points={self.current_points} "
                 f"color_timeout={bool(color_timed_out)} bet_timeout={bool(bet_timed_out)}"
             )
+
+
+def _sample_cgt_trial(
+    *,
+    rng: random.Random,
+    order: str,
+    box_ratios: tuple[tuple[int, int], ...],
+    bet_options: tuple[int, ...],
+) -> TrialSpec:
+    major, minor = rng.choice(box_ratios)
+    majority_color = COLOR_RED if rng.random() < 0.5 else COLOR_BLUE
+    if majority_color == COLOR_RED:
+        red_boxes, blue_boxes = major, minor
+    else:
+        red_boxes, blue_boxes = minor, major
+
+    p_red = float(red_boxes) / float(max(1, red_boxes + blue_boxes))
+    token_color = COLOR_RED if rng.random() < p_red else COLOR_BLUE
+    minority_color = COLOR_BLUE if majority_color == COLOR_RED else COLOR_RED
+    ordered_bets = bet_options if order == ORDER_ASCENDING else tuple(reversed(bet_options))
+
+    return TrialSpec(
+        order=order,
+        ratio_label=f"{major}:{minor}",
+        red_boxes=int(red_boxes),
+        blue_boxes=int(blue_boxes),
+        majority_color=majority_color,
+        minority_color=minority_color,
+        token_color=token_color,
+        bet_options=tuple(int(v) for v in ordered_bets),
+        red_left=bool(rng.random() < 0.5),
+    )
+
+
+def generate_cgt_conditions(
+    n_trials: int,
+    condition_labels: list[Any] | None = None,
+    *,
+    seed: int = 0,
+    block_idx: int = 0,
+    box_ratios: Any = None,
+    bet_options: Any = None,
+    block_order: Any = None,
+) -> list[tuple[Any, ...]]:
+    """Build concrete Cambridge Gambling trial specs during block scheduling."""
+    labels = [str(label).strip().lower() for label in (condition_labels or ["gambling"])]
+    if not labels:
+        labels = ["gambling"]
+    ratios = Controller._normalize_ratios(box_ratios)
+    bets = Controller._normalize_bet_options(bet_options)
+    orders = Controller._normalize_block_order(block_order)
+    order = orders[int(block_idx) % len(orders)]
+    rng = random.Random(int(seed))
+
+    scheduled: list[tuple[Any, ...]] = []
+    for trial_index in range(int(n_trials)):
+        condition_name = labels[trial_index % len(labels)]
+        spec = _sample_cgt_trial(rng=rng, order=order, box_ratios=ratios, bet_options=bets)
+        scheduled.append(
+            (
+                condition_name,
+                spec.order,
+                spec.ratio_label,
+                spec.red_boxes,
+                spec.blue_boxes,
+                spec.majority_color,
+                spec.minority_color,
+                spec.token_color,
+                spec.bet_options,
+                spec.red_left,
+            )
+        )
+    return scheduled
+
+
+def cgt_condition_to_trial_spec(condition: Any) -> tuple[str, TrialSpec]:
+    """Decode a scheduled Cambridge Gambling condition tuple."""
+    if isinstance(condition, (tuple, list)) and len(condition) >= 10:
+        (
+            condition_name,
+            order,
+            ratio_label,
+            red_boxes,
+            blue_boxes,
+            majority_color,
+            minority_color,
+            token_color,
+            bet_options,
+            red_left,
+        ) = condition[:10]
+        return str(condition_name).strip().lower(), TrialSpec(
+            order=str(order),
+            ratio_label=str(ratio_label),
+            red_boxes=int(red_boxes),
+            blue_boxes=int(blue_boxes),
+            majority_color=str(majority_color),
+            minority_color=str(minority_color),
+            token_color=str(token_color),
+            bet_options=tuple(int(v) for v in bet_options),
+            red_left=bool(red_left),
+        )
+    raise ValueError(f"Expected scheduled CGT condition tuple, got {condition!r}")
+
+
+def box_positions() -> list[tuple[float, float]]:
+    return [(-450.0 + (100.0 * idx), 150.0) for idx in range(10)]
+
+
+def bet_positions() -> list[tuple[float, float]]:
+    return [(-320.0, -70.0), (-160.0, -70.0), (0.0, -70.0), (160.0, -70.0), (320.0, -70.0)]
+
+
+def add_boxes(unit: Any, stim_bank: Any, *, red_boxes: int, blue_boxes: int, red_left: bool) -> None:
+    left_color = COLOR_RED if red_left else COLOR_BLUE
+    right_color = COLOR_BLUE if red_left else COLOR_RED
+    left_count = int(red_boxes) if red_left else int(blue_boxes)
+    right_count = int(blue_boxes) if red_left else int(red_boxes)
+
+    color_tokens = [left_color] * left_count + [right_color] * right_count
+    positions = box_positions()
+    for idx in range(10):
+        color_token = color_tokens[idx] if idx < len(color_tokens) else right_color
+        fill_color = [0.92, 0.23, 0.23] if color_token == COLOR_RED else [0.24, 0.42, 0.95]
+        unit.add_stim(
+            stim_bank.rebuild(
+                "box_token_template",
+                text="â– ",
+                pos=positions[idx],
+                color=fill_color,
+            )
+        )
+
+
+def add_bet_options(unit: Any, stim_bank: Any, bet_options: list[int], bet_keys: list[str]) -> str:
+    positions = bet_positions()
+    legend_parts: list[str] = []
+    for idx, pct in enumerate(bet_options):
+        if idx >= len(positions) or idx >= len(bet_keys):
+            break
+        key = str(bet_keys[idx]).strip()
+        label = f"{pct}%"
+        legend_parts.append(f"{key}={label}")
+        unit.add_stim(
+            stim_bank.rebuild(
+                "bet_option_template",
+                text=label,
+                pos=positions[idx],
+            )
+        )
+    return " / ".join(legend_parts)

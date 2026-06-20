@@ -23,7 +23,7 @@ from psyflow import (
     runtime_context,
 )
 
-from src import Controller, run_trial
+from src import Controller, generate_cgt_conditions, run_trial
 
 MODES = ("human", "qa", "sim")
 DEFAULT_CONFIG_BY_MODE = {
@@ -211,7 +211,13 @@ def run(options: TaskRunOptions):
                     window=win,
                     keyboard=kb,
                 )
-                .generate_conditions()
+                .generate_conditions(
+                    func=generate_cgt_conditions,
+                    block_idx=block_i,
+                    box_ratios=controller.box_ratios,
+                    bet_options=controller.bet_options,
+                    block_order=controller.block_order,
+                )
                 .on_start(lambda b: trigger_runtime.send(settings.triggers.get("block_onset")))
                 .on_end(lambda b: trigger_runtime.send(settings.triggers.get("block_end")))
                 .run_trial(
